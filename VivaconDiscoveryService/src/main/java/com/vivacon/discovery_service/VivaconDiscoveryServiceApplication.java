@@ -1,4 +1,4 @@
-package com.hcmute.discovery_service;
+package com.vivacon.discovery_service;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
