@@ -6,4 +6,4 @@ Spring Cloud Framework.
 This project will be named as Vivacon - which stands for viva connections 
 between us. 
 
-The UML image of the whole project will be updated later.
+The UML image of the whole project structure will be updated later.

@@ -9,7 +9,7 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.hcmute</groupId>
-	<artifactId>VivaconDiscoveryService</artifactId>
+	<artifactId>DiscoveryService</artifactId>
 	<version>0.0.1</version>
 	<name>VivaconDiscoveryService</name>
 	<description>Vivacon Social Media Discovery Service</description>
