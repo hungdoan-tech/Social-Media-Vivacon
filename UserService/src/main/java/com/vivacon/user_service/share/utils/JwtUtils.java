@@ -1,8 +1,7 @@
-package com.vivacon.user_service.shared.utils;
+package com.vivacon.user_service.share.utils;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -21,48 +20,36 @@ import static java.lang.String.format;
 @Component
 public class JwtUtils {
 
-    @Value("${ojt.jwt.secret_salt}")
-    private String jwtSecret;
+    @Value("${jwt.secret_salt}")
+    private String jwtSecretSalt;
 
-    @Value("${ojt.jwt.jwt_validity}")
-    private long JWT_VALIDITY;
+    @Value("${jwt.expiration_time}")
+    private long jwtExpirationTime;
 
-    @Value("${ojt.jwt.jwt_issuer}")
-    private String JWT_ISSUER;
-
-    private Jws<Claims> currentJMS;
+    @Value("${jwt.jwt_issuer}")
+    private String jwtIssuer;
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     public String generateAccessToken(UserDetails userDetails) {
+
         return Jwts.builder()
                 .setSubject(format("%s", userDetails.getUsername()))
-                .setIssuer(JWT_ISSUER)
+                .setIssuer(jwtIssuer)
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + JWT_VALIDITY))
-                .signWith(SignatureAlgorithm.HS512, jwtSecret)
+                .setExpiration(new Date(System.currentTimeMillis() + jwtExpirationTime))
+                .signWith(SignatureAlgorithm.HS512, this.jwtSecretSalt)
                 .compact();
     }
 
     public String getUsername(String token) {
-        if (currentJMS == null) {
-            this.validate(token);
-        }
-        Claims claims = currentJMS.getBody();
+        Claims claims = Jwts.parser().setSigningKey(jwtSecretSalt).parseClaimsJws(token).getBody();
         return claims.getSubject().split(",")[0];
-    }
-
-    public Date getExpirationDate(String token) {
-        if (currentJMS == null) {
-            this.validate(token);
-        }
-        Claims claims = currentJMS.getBody();
-        return claims.getExpiration();
     }
 
     public boolean validate(String token) {
         try {
-            currentJMS = Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token);
+            Jwts.parser().setSigningKey(jwtSecretSalt).parseClaimsJws(token);
             return true;
         } catch (SignatureException ex) {
             logger.error("Invalid JWT signature - {}", ex.getMessage());

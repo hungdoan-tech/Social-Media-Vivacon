@@ -3,7 +3,7 @@ package com.vivacon.user_service.presentation.controller;
 import com.vivacon.user_service.presentation.model.CreateUserRequestModel;
 import com.vivacon.user_service.presentation.model.CreateUserResponseModel;
 import com.vivacon.user_service.service.UsersService;
-import com.vivacon.user_service.shared.UserDto;
+import com.vivacon.user_service.share.dto.UserDto;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
@@ -41,13 +41,12 @@ public class UsersController {
     }
 
     @PostMapping(
-            consumes = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE},
-            produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<CreateUserResponseModel> signupNewUser(
-            @RequestBody @Valid CreateUserRequestModel requestUser) {
+            consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE},
+            produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
+    public ResponseEntity<CreateUserResponseModel> signupNewUser(@RequestBody @Valid CreateUserRequestModel requestUser) {
         UserDto userDto = this.mapper.map(requestUser, UserDto.class);
         UserDto createdUser = this.usersService.createUser(userDto);
-        CreateUserResponseModel reponsedUser = this.mapper.map(createdUser, CreateUserResponseModel.class);
-        return ResponseEntity.status(HttpStatus.CREATED).body(reponsedUser);
+        CreateUserResponseModel responseUser = this.mapper.map(createdUser, CreateUserResponseModel.class);
+        return ResponseEntity.status(HttpStatus.CREATED).body(responseUser);
     }
 }

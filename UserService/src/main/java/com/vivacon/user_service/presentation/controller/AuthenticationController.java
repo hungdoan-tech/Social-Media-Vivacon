@@ -2,8 +2,8 @@ package com.vivacon.user_service.presentation.controller;
 
 import com.vivacon.user_service.presentation.model.LoginRequestModel;
 import com.vivacon.user_service.service.UsersService;
-import com.vivacon.user_service.shared.UserDto;
-import com.vivacon.user_service.shared.utils.JwtUtils;
+import com.vivacon.user_service.share.dto.UserDto;
+import com.vivacon.user_service.share.utils.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -14,13 +14,11 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping("/login")
 public class AuthenticationController {
 
     private AuthenticationManager authenticationManager;
@@ -45,8 +43,9 @@ public class AuthenticationController {
     }
 
     @PostMapping(
-            consumes = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE},
-            produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE})
+            value = "/login",
+            consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE},
+            produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     public ResponseEntity signupNewUser(@RequestBody @Valid LoginRequestModel credential) {
 
         Authentication authenticate = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(credential.getEmail(), credential.getPassword()));
