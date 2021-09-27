@@ -14,11 +14,13 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 
 @RestController
+@RequestMapping("/users")
 public class AuthenticationController {
 
     private AuthenticationManager authenticationManager;
@@ -55,7 +57,7 @@ public class AuthenticationController {
         return ResponseEntity
                 .ok()
                 .header(HttpHeaders.AUTHORIZATION, jwt)
-                .header("users_id", AuthenticatedUser.getUserId())
+                .header("User-Identity", AuthenticatedUser.getUserId())
                 .body(null);
     }
 }

@@ -5,22 +5,55 @@ spring:
     name: api-gateway
   cloud:
     gateway:
-      discovery:
-        locator:
-          enabled: true
-          lower-case-service-id: true
+      #      discovery:
+      #        locator:
+      #          enabled: true
+      #          lower-case-service-id: true
       routes:
-      - id: users-status-check
-        uri: lb://users-ws
-        predicates:
-#        - Path=/users-ws/users/status/check
-        - Path=/users/status/check
-        - Method=GET
-        filters:
-        - RemoveRequestHeader=Cookie
-#        - RewritePath=/users-ws/users/status/check, /users/status/check
-#        - RewritePath=/users-ws/(?<segment>.*), /$\{segment}
+        - id: users-ws-status-check
+          uri: lb://users-ws
+          predicates:
+            #        - Path=/users-ws/users/status/check
+            - Path=/users-ws/users/status/check
+            - Method=GET
+            - Header=Authorization, Bearer (.*)
+          filters:
+            - RemoveRequestHeader=Cookie
+            #        - RewritePath=/users-ws/users/status/check, /users/status/check
+            - RewritePath=/users-ws/(?<segment>.*), /$\{segment}
+            - AuthorizationHeaderFilter
+
+        - id: users-ws-signup
+          uri: lb://users-ws
+          predicates:
+            - Path=/users-ws/users
+            - Method=POST
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/users-ws/(?<segment>.*), /$\{segment}
+
+        - id: users-ws-login
+          uri: lb://users-ws
+          predicates:
+            - Path=/users-ws/users/login
+            - Method=POST
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/users-ws/(?<segment>.*), /$\{segment}
+
+        - id: users-ws-get-update-delete
+          uri: lb://users-ws
+          predicates:
+            - Path=/users-ws/users
+            - Method=GET,PUT,DELETE
+            - Header=Authorization, Bearer (.*)
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/users-ws/(?<segment>.*), /$\{segment}
+            - AuthorizationHeaderFilter
 eureka:
   client:
     service-url:
       defaultZone: http://localhost:8010/eureka
+jwt:
+  secret_salt: hfgrynjanscjnjdanscdh475fh12nw1
