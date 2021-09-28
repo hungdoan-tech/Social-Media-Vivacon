@@ -1,0 +1,14 @@
+server:
+  port: 8012
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    config:
+      server:
+        git:
+          uri: https://github.com/hungdoan-tech/Vivacon-Configuration.git
+          username: hungdoan-tech
+          password: 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
+          clone-on-start: true
+          default-label: main
