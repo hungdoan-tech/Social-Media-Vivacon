@@ -12,3 +12,13 @@ spring:
           password: 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
           clone-on-start: true
           default-label: main
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+management:
+  endpoints:
+    web:
+      exposure:
+        include: busrefresh

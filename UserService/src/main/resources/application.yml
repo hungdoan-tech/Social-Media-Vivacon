@@ -21,7 +21,12 @@ spring:
     database-platform: org.hibernate.dialect.H2Dialect
   config:
     import: optional:configserver:http://localhost:8012
-
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+    
 eureka:
   client:
     service-url:
