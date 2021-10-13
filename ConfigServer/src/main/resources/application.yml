@@ -9,14 +9,19 @@ spring:
         git:
           uri: https://github.com/hungdoan-tech/Vivacon-Configuration.git
           username: hungdoan-tech
-          password: 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
+          password: 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
           clone-on-start: true
           default-label: main
+          force-pull: true
+    bus:
+      enabled: true
   rabbitmq:
     host: localhost
     port: 5672
     username: guest
     password: guest
+  config:
+    import: optional:configserver:htp://localhost:8012
 management:
   endpoints:
     web:

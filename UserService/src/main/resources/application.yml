@@ -26,7 +26,7 @@ spring:
     port: 5672
     username: guest
     password: guest
-    
+
 eureka:
   client:
     service-url:
@@ -34,12 +34,8 @@ eureka:
   instance:
     instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}
 
-#gateway:
-#  ip: 192.168.1.8
-#jwt:
-#  expiration_time: 864000000
-#  secret_salt: hfgrynjanscjnjdanscdh475fh12nw1
-#  jwt_issuer: hungdoan-tech
-#login:
-#  url:
-#    path: /users/login
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,beans

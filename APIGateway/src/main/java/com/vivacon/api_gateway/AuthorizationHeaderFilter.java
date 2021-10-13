@@ -2,6 +2,7 @@ package com.vivacon.api_gateway;
 
 import io.jsonwebtoken.Jwts;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
 import org.springframework.core.env.Environment;
@@ -17,6 +18,9 @@ import java.util.Objects;
 
 @Component
 public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<AuthorizationHeaderFilter.Config> {
+
+    @Value("${jwt.secret_salt}")
+    private String jwtSecretSalt;
 
     private Environment environment;
 
@@ -56,9 +60,11 @@ public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<Auth
 
     private boolean isJwtValid(String jwt) {
         String subject = null;
+        String salt = environment.getProperty("jwt.secret_salt");
+        String temp = jwtSecretSalt;
         try {
             subject = Jwts.parser()
-                    .setSigningKey(environment.getProperty("jwt.secret_salt"))
+                    .setSigningKey(salt)
                     .parseClaimsJws(jwt).getBody().getSubject();
         } catch (Exception e) {
             return false;
