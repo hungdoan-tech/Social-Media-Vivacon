@@ -76,4 +76,4 @@ management:
   endpoints:
     web:
       exposure:
-        include: health,beans
+        include: health,beans,mapping

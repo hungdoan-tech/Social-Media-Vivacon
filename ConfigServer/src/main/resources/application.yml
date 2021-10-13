@@ -20,8 +20,8 @@ spring:
     port: 5672
     username: guest
     password: guest
-  config:
-    import: optional:configserver:htp://localhost:8012
+#  config:
+#    import: optional:configserver:http://localhost:8012
 management:
   endpoints:
     web:
