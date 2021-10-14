@@ -9,23 +9,13 @@ spring:
       enabled: true
   config:
     import: optional:configserver:http://localhost:8012
-  rabbitmq:
-    host: localhost
-    port: 5672
-    username: guest
-    password: guest
 
 eureka:
-  client:
-    service-url:
-      defaultZone: http://localhost:8010/eureka
   instance:
     instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}
 
 management:
   endpoints:
-    security:
-      enabled= false
     web:
       exposure:
-        include: health,beans,httptrace
+        include: health,beans,mapping

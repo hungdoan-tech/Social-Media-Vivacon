@@ -7,10 +7,15 @@ spring:
   devtools:
     restart:
       enabled: true
+  config:
+    import: optional:configserver:http://localhost:8012
 
 eureka:
-  client:
-    serviceUrl:
-      defaultZone: http://localhost:8010/eureka
   instance:
     instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,beans,mapping

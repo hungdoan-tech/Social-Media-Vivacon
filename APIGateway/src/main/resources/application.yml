@@ -3,30 +3,19 @@ server:
 spring:
   application:
     name: api-gateway
-  rabbitmq:
-    host: localhost
-    port: 5672
-    username: guest
-    password: guest
   config:
     import: optional:configserver:http://localhost:8012
   cloud:
     gateway:
-      #      discovery:
-      #        locator:
-      #          enabled: true
-      #          lower-case-service-id: true
       routes:
-        - id: users-ws-status-check
+        - id: users-ws-general-endpoints
           uri: lb://users-ws
           predicates:
-            #        - Path=/users-ws/users/status/check
-            - Path=/users-ws/users/status/check
+            - Path=/users-ws/users/**
             - Method=GET
             - Header=Authorization, Bearer (.*)
           filters:
             - RemoveRequestHeader=Cookie
-            #        - RewritePath=/users-ws/users/status/check, /users/status/check
             - RewritePath=/users-ws/(?<segment>.*), /$\{segment}
             - AuthorizationHeaderFilter
 
@@ -48,28 +37,6 @@ spring:
             - RemoveRequestHeader=Cookie
             - RewritePath=/users-ws/(?<segment>.*), /$\{segment}
 
-        - id: users-ws-get-update-delete
-          uri: lb://users-ws
-          predicates:
-            - Path=/users-ws/users
-            - Method=GET,PUT,DELETE
-            - Header=Authorization, Bearer (.*)
-          filters:
-            - RemoveRequestHeader=Cookie
-            - RewritePath=/users-ws/(?<segment>.*), /$\{segment}
-            - AuthorizationHeaderFilter
-
-        - id: users-ws-get-detail-user
-          uri: lb://users-ws
-          predicates:
-            - Path=/users-ws/users/**
-            - Method=GET
-            - Header=Authorization, Bearer (.*)
-          filters:
-            - RemoveRequestHeader=Cookie
-            - RewritePath=/users-ws/(?<segment>.*), /$\{segment}
-            - AuthorizationHeaderFilter
-
         - id: users-ws-actuator
           uri: lb://users-ws
           predicates:
@@ -78,15 +45,9 @@ spring:
           filters:
             - RemoveRequestHeader=Cookie
             - RewritePath=/users-ws/(?<segment>.*), /$\{segment}
-eureka:
-  client:
-    service-url:
-      defaultZone: http://localhost:8010/eureka
 
 management:
-  security:
-    enabled= false
   endpoints:
     web:
       exposure:
-        include: health,beans,mapping
+        include: health,beans,httptrace
