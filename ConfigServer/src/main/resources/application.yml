@@ -1,11 +1,14 @@
 server:
   port: 8012
+
 spring:
   application:
-    name: api-gateway
+    name: config-server
   cloud:
     config:
       server:
+        native:
+          search-locations: file://${user.home}/vivacon/configurations/dev
         git:
           uri: https://github.com/hungdoan-tech/Vivacon-Configuration.git
           username: hungdoan-tech
@@ -16,13 +19,16 @@ spring:
         enabled: true
     bus:
       enabled: true
+      refresh:
+        enabled: true
   rabbitmq:
     host: localhost
     port: 5672
     username: guest
     password: guest
-#  config:
-#    import: optional:configserver:http://localhost:8012
+  profiles:
+    active: native
+
 management:
   endpoints:
     web:

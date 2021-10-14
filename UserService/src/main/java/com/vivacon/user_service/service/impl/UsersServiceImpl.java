@@ -8,6 +8,7 @@ import com.vivacon.user_service.share.dto.UserDto;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.User;
@@ -32,6 +33,8 @@ public class UsersServiceImpl implements UsersService {
 
     private RestTemplate restTemplate;
 
+    private Environment environment;
+
     @Autowired
     public void setMapper(ModelMapper mapper) {
         this.mapper = mapper;
@@ -50,6 +53,11 @@ public class UsersServiceImpl implements UsersService {
     @Autowired
     public void setRestTemplate(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
+    }
+
+    @Autowired
+    public void setEnvironment(Environment environment) {
+        this.environment = environment;
     }
 
     @Override
@@ -81,7 +89,7 @@ public class UsersServiceImpl implements UsersService {
         }
         UserDto userDto = new ModelMapper().map(userEntity, UserDto.class);
 
-        String albumServiceUrl = String.format("http://albums-ws/users/%s/albums", userId);
+        String albumServiceUrl = String.format(this.environment.getProperty("url.albums_of_a_person"), userId);
         ResponseEntity<List<AlbumResponseModel>> exchange = this.restTemplate.exchange(albumServiceUrl, HttpMethod.GET, null, new ParameterizedTypeReference<List<AlbumResponseModel>>() {
         });
         List<AlbumResponseModel> albums = exchange.getBody();

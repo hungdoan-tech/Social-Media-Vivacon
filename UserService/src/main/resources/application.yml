@@ -7,10 +7,6 @@ spring:
   devtools:
     restart:
       enabled: true
-  jpa:
-    hibernate:
-      ddl-auto: update
-    database-platform: org.hibernate.dialect.MySQL8Dialect
   config:
     import: optional:configserver:http://localhost:8012
   rabbitmq:
@@ -28,6 +24,8 @@ eureka:
 
 management:
   endpoints:
+    security:
+      enabled= false
     web:
       exposure:
         include: health,beans,httptrace

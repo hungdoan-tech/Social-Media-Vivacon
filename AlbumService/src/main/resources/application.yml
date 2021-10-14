@@ -14,7 +14,3 @@ eureka:
       defaultZone: http://localhost:8010/eureka
   instance:
     instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}
-
-logging:
-  file:
-    name: albums-ws.log
