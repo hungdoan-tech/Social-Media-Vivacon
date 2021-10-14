@@ -13,6 +13,7 @@ spring:
           clone-on-start: true
           default-label: main
           force-pull: true
+        enabled: true
     bus:
       enabled: true
   rabbitmq:

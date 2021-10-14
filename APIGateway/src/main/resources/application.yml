@@ -59,6 +59,17 @@ spring:
             - RewritePath=/users-ws/(?<segment>.*), /$\{segment}
             - AuthorizationHeaderFilter
 
+        - id: users-ws-get-detail-user
+          uri: lb://users-ws
+          predicates:
+            - Path=/users-ws/users/**
+            - Method=GET
+            - Header=Authorization, Bearer (.*)
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/users-ws/(?<segment>.*), /$\{segment}
+            - AuthorizationHeaderFilter
+
         - id: users-ws-actuator
           uri: lb://users-ws
           predicates:

@@ -2,6 +2,7 @@ package com.vivacon.user_service.presentation.controller;
 
 import com.vivacon.user_service.presentation.model.CreateUserRequestModel;
 import com.vivacon.user_service.presentation.model.CreateUserResponseModel;
+import com.vivacon.user_service.presentation.model.UserResponseModel;
 import com.vivacon.user_service.service.UsersService;
 import com.vivacon.user_service.share.dto.UserDto;
 import org.modelmapper.ModelMapper;
@@ -11,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -48,5 +50,13 @@ public class UsersController {
         UserDto createdUser = this.usersService.createUser(userDto);
         CreateUserResponseModel responseUser = this.mapper.map(createdUser, CreateUserResponseModel.class);
         return ResponseEntity.status(HttpStatus.CREATED).body(responseUser);
+    }
+
+    @GetMapping(value = "/{id}",
+            produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
+    public ResponseEntity<UserResponseModel> getUser(@PathVariable("id") String userId) {
+        UserDto userDto = this.usersService.getUserById(userId);
+        UserResponseModel userResponse = this.mapper.map(userDto, UserResponseModel.class);
+        return ResponseEntity.status(HttpStatus.OK).body(userResponse);
     }
 }

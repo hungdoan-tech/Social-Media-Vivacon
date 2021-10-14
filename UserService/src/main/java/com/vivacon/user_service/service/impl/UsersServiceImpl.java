@@ -2,17 +2,23 @@ package com.vivacon.user_service.service.impl;
 
 import com.vivacon.user_service.data_access.entity.UserEntity;
 import com.vivacon.user_service.data_access.repository.UsersRepository;
+import com.vivacon.user_service.presentation.model.AlbumResponseModel;
 import com.vivacon.user_service.service.UsersService;
 import com.vivacon.user_service.share.dto.UserDto;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Component
@@ -23,6 +29,8 @@ public class UsersServiceImpl implements UsersService {
     private PasswordEncoder passwordEncoder;
 
     private UsersRepository usersRepository;
+
+    private RestTemplate restTemplate;
 
     @Autowired
     public void setMapper(ModelMapper mapper) {
@@ -37,6 +45,11 @@ public class UsersServiceImpl implements UsersService {
     @Autowired
     public void setUsersRepository(UsersRepository usersRepository) {
         this.usersRepository = usersRepository;
+    }
+
+    @Autowired
+    public void setRestTemplate(RestTemplate restTemplate) {
+        this.restTemplate = restTemplate;
     }
 
     @Override
@@ -58,6 +71,23 @@ public class UsersServiceImpl implements UsersService {
             throw new UsernameNotFoundException(email);
         }
         return new ModelMapper().map(userEntity, UserDto.class);
+    }
+
+    @Override
+    public UserDto getUserById(String userId) {
+        UserEntity userEntity = usersRepository.findByUserId(userId);
+        if (userEntity == null) {
+            throw new UsernameNotFoundException(userId);
+        }
+        UserDto userDto = new ModelMapper().map(userEntity, UserDto.class);
+
+        String albumServiceUrl = String.format("http://albums-ws/users/%s/albums", userId);
+        ResponseEntity<List<AlbumResponseModel>> exchange = this.restTemplate.exchange(albumServiceUrl, HttpMethod.GET, null, new ParameterizedTypeReference<List<AlbumResponseModel>>() {
+        });
+        List<AlbumResponseModel> albums = exchange.getBody();
+        userDto.setAlbums(albums);
+
+        return userDto;
     }
 
     @Override

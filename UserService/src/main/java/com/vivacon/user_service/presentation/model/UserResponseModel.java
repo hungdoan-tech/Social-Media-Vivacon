@@ -1,26 +1,12 @@
-package com.vivacon.user_service.share.dto;
+package com.vivacon.user_service.presentation.model;
 
-import com.vivacon.user_service.presentation.model.AlbumResponseModel;
-
-import java.io.Serializable;
 import java.util.List;
 
-public class UserDto implements Serializable {
-
-    private static final long serialVersionUID = 1886972871711455705L;
-
+public class UserResponseModel {
     private String userId;
-
     private String firstName;
-
     private String lastName;
-
-    private String password;
-
     private String email;
-
-    private String encryptedPassword;
-
     private List<AlbumResponseModel> albums;
 
     public String getUserId() {
@@ -47,28 +33,12 @@ public class UserDto implements Serializable {
         this.lastName = lastName;
     }
 
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
     public String getEmail() {
         return email;
     }
 
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    public String getEncryptedPassword() {
-        return encryptedPassword;
-    }
-
-    public void setEncryptedPassword(String encryptedPassword) {
-        this.encryptedPassword = encryptedPassword;
     }
 
     public List<AlbumResponseModel> getAlbums() {
