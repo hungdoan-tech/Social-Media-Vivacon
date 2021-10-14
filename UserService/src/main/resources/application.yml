@@ -19,3 +19,10 @@ management:
     web:
       exposure:
         include: health,beans,mapping
+
+logging:
+  level:
+    com:
+      vivacon:
+        user_service:
+          data_access: DEBUG
