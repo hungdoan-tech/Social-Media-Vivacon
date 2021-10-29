@@ -8,6 +8,8 @@ import com.vivacon.user_service.service.UsersService;
 import com.vivacon.user_service.share.dto.UserDto;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.client.circuitbreaker.CircuitBreaker;
+import org.springframework.cloud.client.circuitbreaker.CircuitBreakerFactory;
 import org.springframework.core.env.Environment;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -32,17 +34,21 @@ public class UsersServiceImpl implements UsersService {
 
     private AlbumServiceClient albumServiceClient;
 
+    private CircuitBreakerFactory circuitBreakerFactory;
+
     @Autowired
     public UsersServiceImpl(ModelMapper mapper,
                             PasswordEncoder passwordEncoder,
                             UsersRepository usersRepository,
                             Environment environment,
-                            AlbumServiceClient albumServiceClient) {
+                            AlbumServiceClient albumServiceClient,
+                            CircuitBreakerFactory circuitBreakerFactory) {
         this.mapper = mapper;
         this.passwordEncoder = passwordEncoder;
         this.usersRepository = usersRepository;
         this.environment = environment;
         this.albumServiceClient = albumServiceClient;
+        this.circuitBreakerFactory = circuitBreakerFactory;
     }
 
     @Override
@@ -73,7 +79,12 @@ public class UsersServiceImpl implements UsersService {
             throw new UsernameNotFoundException(userId);
         }
         UserDto userDto = new ModelMapper().map(userEntity, UserDto.class);
-        List<AlbumResponseModel> albums = this.albumServiceClient.getAlbums(userId);
+        //List<AlbumResponseModel> albums = this.albumServiceClient.getAlbums(userId);
+
+        CircuitBreaker circuitBreaker = circuitBreakerFactory.create("AlbumsCircuitBreaker");
+        List<AlbumResponseModel> albums = circuitBreaker.run(
+                () -> this.albumServiceClient.getAlbums(userId),
+                throwable -> new ArrayList<AlbumResponseModel>());
         userDto.setAlbums(albums);
         return userDto;
     }
