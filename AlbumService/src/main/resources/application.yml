@@ -19,3 +19,6 @@ management:
     web:
       exposure:
         include: health,beans,mapping
+logging:
+  file:
+    name: albums-ws.log

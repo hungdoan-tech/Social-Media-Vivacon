@@ -52,7 +52,8 @@ public class UsersController {
         return ResponseEntity.status(HttpStatus.CREATED).body(responseUser);
     }
 
-    @GetMapping(value = "/{id}",
+    @GetMapping(
+            value = "/{id}",
             produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     public ResponseEntity<UserResponseModel> getUser(@PathVariable("id") String userId) {
         UserDto userDto = this.usersService.getUserById(userId);
